@@ -70,7 +70,7 @@ function canQueenCaptureKing(queen, king) {
   if (queen.x === king.x || queen.y === king.y) {
     return true;
   }
-  if (Math.abs(queen.x - queen.y) === Math.abs(king.x - king.y)) {
+  if (Math.abs(queen.x - king.x) === Math.abs(queen.y - king.y)) {
     return true;
   }
   return false;
@@ -116,7 +116,7 @@ function isIsoscelesTriangle(a, b, c) {
 function convertToRomanNumerals(num) {
   const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
   const integer = Math.floor(num / 10);
-  const fractional = (num / 10 - integer) * 10;
+  const fractional = Math.floor((num / 10 - integer) * 10);
   if (integer < 1) {
     return roman[fractional - 1];
   }
@@ -165,11 +165,14 @@ function convertNumberToString(numberStr) {
       result += 'minus ';
       i += 1;
     }
-    if (numberStr[i] === '.') {
+
+    if (numberStr[i] === '.' || numberStr[i] === ',') {
       result += 'point ';
       i += 1;
     }
+
     result += numbers[numberStr[i]];
+
     if (i < numberStr.length - 1) {
       result += ' ';
     }
@@ -190,18 +193,9 @@ function convertNumberToString(numberStr) {
  *  'qweqwe'    => false
  */
 function isPalindrome(str) {
-  let withoutSpace = '';
-  for (let i = 0; i < str.length; i += 1) {
-    if (str[i] === ' ') {
-      i += 1;
-    }
-    if (i < str.length) {
-      withoutSpace += str[i];
-    }
-  }
-  let endStr = withoutSpace.length - 1;
-  for (let i = 0; i < Math.floor(withoutSpace.length / 2); i += 1) {
-    if (withoutSpace[i] !== withoutSpace[endStr]) {
+  let endStr = str.length - 1;
+  for (let i = 0; i < Math.floor(str.length / 2); i += 1) {
+    if (str[i] !== str[endStr]) {
       return false;
     }
     endStr -= 1;
@@ -472,13 +466,17 @@ function sortByAsc(arr) {
  */
 function shuffleChar(str, iterations) {
   let result = str;
-  for (let i = 0; i < iterations; i += 1) {
+
+  const lenght = str.length;
+  const iteration = iterations % lenght;
+
+  for (let i = 0; i < iteration; i += 1) {
     let newString = '';
     for (let j = 0; j < result.length; j += 2) {
       newString += result[j];
     }
-    for (let m = 1; m < result.length; m += 2) {
-      newString += result[m];
+    for (let j = 1; j < result.length; j += 2) {
+      newString += result[j];
     }
     result = newString;
   }
@@ -504,7 +502,9 @@ function shuffleChar(str, iterations) {
  */
 function getNearestBigger(number) {
   const str = number.toString();
-  for (let i = number + 1; ; i += 1) {
+  const maxFromNumber = Math.max(...str.split(''));
+  const maxNumber = new Array(str.length).fill(maxFromNumber).join('');
+  for (let i = number + 1; i <= Number(maxNumber); i += 1) {
     const arrNum = i.toString().split('');
     for (let n = 0; n < str.length; n += 1) {
       if (arrNum.includes(str[n])) {
@@ -518,6 +518,7 @@ function getNearestBigger(number) {
       return i;
     }
   }
+  return number;
 }
 
 module.exports = {
